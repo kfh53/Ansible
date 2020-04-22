@@ -1,0 +1,8 @@
+- name: Create Bitbucket Container
+  docker_container:
+    name: Bitbucket
+    image: atlassian/bitbucket-server
+    published_ports: 7990:7990
+    state: started
+    volumes:
+      - ../vols/bitbucket:/data

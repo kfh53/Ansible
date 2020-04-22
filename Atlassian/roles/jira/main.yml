@@ -1,0 +1,17 @@
+- name: Build Jira Container
+  docker_container:
+    name: Jira
+    image: atlassian/jira-software
+    recreate: yes
+    state: started
+    published_ports: 8080:8080
+    volumes:
+      - ../vols/jira/jira-var/:/var/atlassian/application-data/jira/
+
+- name: Move JDBC Drive to the proper place
+  command: docker exec Jira bash -c 'cp /var/atlassian/application-data/jira/mysql-connector-java-5.1.48.jar /opt/atlassian/jira/lib/'
+
+- name: Restart after the driver is in the proper spot
+  docker_container:
+    name: Jira
+    restart: yes

@@ -1,0 +1,8 @@
+- name: Create Crowd Container
+  docker_container:
+    name: Crowd
+    image: atlassian/crowd
+    published_ports: 8095:8095
+    state: started
+    volumes:
+      - ../vols/crowd:/data

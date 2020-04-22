@@ -1,0 +1,41 @@
+---
+- name: Atlassian Tool Setup
+  hosts: 127.0.0.1
+  gather_facts: yes
+  tasks: 
+  - name: Download Dependencies
+    apt:
+      name: "{{ item }}"
+      state: latest
+      update_cache: yes
+    loop:
+      - docker
+      - python3-pip
+  - name: Install docker-py
+    pip:
+      name: docker-py
+  - name: Start Docker 
+    service: 
+      name: docker
+      state: started
+  - name: Pull Atlassian images
+    docker_image:
+      name: "{{ item }}"
+      source: pull
+    loop:
+      - mysql
+      - atlassian/jira-software
+      - atlassian/confluence-server
+      - atlassian/bamboo-server
+      - atlassian/bitbucket-server
+      - atlassian/crowd
+      - atlassian/stash
+  - name: Create Containers
+    include: "{{ item }}"
+    loop: 
+      - roles/mysql/main.yml
+      - roles/jira/main.yml
+      - roles/confluence/main.yml
+      - roles/bamboo/main.yml
+      - roles/bitbucket/main.yml
+      - roles/crowd/main.yml

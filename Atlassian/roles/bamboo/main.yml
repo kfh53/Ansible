@@ -1,0 +1,8 @@
+- name: Create Bamboo Container
+  docker_container:
+    name: Bamboo
+    image: atlassian/bamboo-server
+    published_ports: 8085:8085
+    state: started
+    volumes:
+      - ../vols/bamboo:/data

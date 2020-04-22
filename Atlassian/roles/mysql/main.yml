@@ -1,0 +1,49 @@
+- name: Create MySQL Container
+  docker_container:
+    name: MySQL
+    image: mysql:5.7
+    published_ports: 3306:3306
+    state: started
+    recreate: yes
+    volumes:
+      - ../vols/mysql:/var/lib/mysql
+      - ../vols/mysql-conf:/etc/mysql/conf.d/
+    env:
+      MYSQL_ROOT_PASSWORD: password
+
+- name: Wait for mysql service to start before creating databases
+  wait_for: 
+    host: 192.168.1.194
+    port: 3306
+    delay: 5
+    timeout: 30
+
+- name: Make "{{ make_db }}"
+  mysql_db:
+    login_user: root
+    login_password: password
+    login_host: 192.168.1.194
+    login_port: 3306
+    name: "{{ make_db }}"
+    state: present
+  loop:
+    - jira_db
+    - confluence_db
+    - bamboo_db
+    - bitbucket_db
+    - crowd_db
+    - stash_db
+  loop_control:
+    loop_var: make_db
+
+- name: Create db_user and give privileges
+  mysql_user:
+    login_user: root
+    login_password: password
+    login_host: 192.168.1.194
+    login_port: 3306
+    host: 172.17.0.1
+    name: db_user
+    password: password
+    state: present
+    priv: '*.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,ALTER,INDEX'

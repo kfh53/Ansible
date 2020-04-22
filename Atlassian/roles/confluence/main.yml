@@ -1,0 +1,16 @@
+- name: Create Confluence Container
+  docker_container:
+    name: Confluence
+    image: atlassian/confluence-server
+    published_ports: 8090:8090
+    state: started
+    recreate: yes
+    volumes:
+      - ../vols/confluence/confluence-data:/var/atlassian/application-data/confluence/
+      #- ../vols/confluence/confluence-libs:/opt/atlassian/confluence/lib/
+- name: Move JDBC Drive to the proper place
+  command: docker exec Confluence bash -c 'cp /var/atlassian/application-data/confluence/mysql-connector-java-5.1.48/mysql-connector-java-5.1.48-bin.jar /opt/atlassian/confluence/confluence/WEB-INF/lib/'
+- name: Restart after the driver is in the proper spot
+  docker_container:
+    name: Confluence
+    restart: yes
