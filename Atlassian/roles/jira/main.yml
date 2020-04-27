@@ -4,12 +4,12 @@
     image: atlassian/jira-software
     recreate: yes
     state: started
-    published_ports: 8080:8080
+    published_ports: "{{ jira_port }}:{{ jira_port }}"
     volumes:
-      - ../vols/jira/jira-var/:/var/atlassian/application-data/jira/
+      - "{{ vol_dir }}/jira/:{{ home_dir }}/jira/"
 
 - name: Move JDBC Drive to the proper place
-  command: docker exec Jira bash -c 'cp /var/atlassian/application-data/jira/mysql-connector-java-5.1.48.jar /opt/atlassian/jira/lib/'
+  command: docker exec Jira bash -c "cp {{ home_dir }}/jira/mysql-connector-java-5.1.48.jar {{ jira_driver_dir }}"
 
 - name: Restart after the driver is in the proper spot
   docker_container:

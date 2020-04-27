@@ -2,19 +2,19 @@
   docker_container:
     name: MySQL
     image: mysql:5.7
-    published_ports: 3306:3306
+    published_ports: "{{ mysql_port }}:{{ mysql_port }}"
     state: started
     recreate: yes
     volumes:
-      - ../vols/mysql:/var/lib/mysql
-      - ../vols/mysql-conf:/etc/mysql/conf.d/
+      - "{{ vol_dir }}/mysql:/var/lib/mysql"
+      - "{{ vol_dir }}/mysql-conf:/etc/mysql/conf.d/"
     env:
       MYSQL_ROOT_PASSWORD: password
 
 - name: Wait for mysql service to start before creating databases
   wait_for: 
-    host: 192.168.1.194
-    port: 3306
+    host: "{{ mysql_ip }}"
+    port: "{{ mysql_port }}"
     delay: 5
     timeout: 30
 
@@ -22,8 +22,8 @@
   mysql_db:
     login_user: root
     login_password: password
-    login_host: 192.168.1.194
-    login_port: 3306
+    login_host: "{{ mysql_ip }}"
+    login_port: "{{ mysql_port }}"
     name: "{{ make_db }}"
     state: present
   loop:
@@ -40,8 +40,8 @@
   mysql_user:
     login_user: root
     login_password: password
-    login_host: 192.168.1.194
-    login_port: 3306
+    login_host: "{{ mysql_ip }}"
+    login_port: "{{ mysql_port }}"
     host: 172.17.0.1
     name: db_user
     password: password

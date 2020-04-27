@@ -1,16 +1,30 @@
 ---
 - name: Atlassian Tool Setup
-  hosts: 127.0.0.1
+  hosts: atlassian
   gather_facts: yes
+  vars:
+    - mysql_ip: 192.168.1.194
+    - mysql_port: 3306
+    - bamboo_port: 8085
+    - bitbucket_port: 7990
+    - confluence_port: 8090
+    - crowd_port: 8095
+    - jira_port: 8080
+    - confluence_driver_dir: /opt/atlassian/confluence/confluence/WEB-INF/lib/
+    - jira_driver_dir: /opt/atlassian/jira/lib/
+    - vol_dir: /root/Ansible/Atlassian/vols/
+    - home_dir: /var/atlassian/application-data/
   tasks: 
   - name: Download Dependencies
     apt:
-      name: "{{ item }}"
+      name: "{{ packages }}"
       state: latest
       update_cache: yes
     loop:
       - docker
       - python3-pip
+    loop_control:
+      loop_var: packages
   - name: Install docker-py
     pip:
       name: docker-py
@@ -20,7 +34,7 @@
       state: started
   - name: Pull Atlassian images
     docker_image:
-      name: "{{ item }}"
+      name: "{{ docker_images }}"
       source: pull
     loop:
       - mysql
@@ -30,8 +44,10 @@
       - atlassian/bitbucket-server
       - atlassian/crowd
       - atlassian/stash
+    loop_control:
+      loop_var: docker_images
   - name: Create Containers
-    include: "{{ item }}"
+    include: "{{ containers }}"
     loop: 
       - roles/mysql/main.yml
       - roles/jira/main.yml
@@ -39,3 +55,5 @@
       - roles/bamboo/main.yml
       - roles/bitbucket/main.yml
       - roles/crowd/main.yml
+    loop_control:
+      loop_var: containers

@@ -2,7 +2,7 @@
   docker_container:
     name: Bitbucket
     image: atlassian/bitbucket-server
-    published_ports: 7990:7990
+    published_ports: "{{ bitbucket_port }}:{{ bitbucket_port }}"
     state: started
     volumes:
-      - ../vols/bitbucket:/data
+      - "{{ vol_dir }}/bitbucket:/data"

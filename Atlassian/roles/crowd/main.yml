@@ -2,7 +2,7 @@
   docker_container:
     name: Crowd
     image: atlassian/crowd
-    published_ports: 8095:8095
+    published_ports: "{{ crowd_port }}:{{ crowd_port }}"
     state: started
     volumes:
-      - ../vols/crowd:/data
+      - "{{ vol_dir }}/crowd:/data"
