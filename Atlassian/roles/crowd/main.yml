@@ -4,5 +4,14 @@
     image: atlassian/crowd
     published_ports: "{{ crowd_port }}:{{ crowd_port }}"
     state: started
+    recreate: yes
     volumes:
-      - "{{ vol_dir }}/crowd:/data"
+      - "{{ vol_dir }}/crowd:{{ home_dir }}/crowd/"
+
+- name: Move JDBC Drive to the proper place
+  command: docker exec Crowd bash -c "cp {{ home_dir }}crowd/mysql-connector-java-5.1.48-bin.jar {{ crowd_driver_dir }}"
+
+- name: Restart after the driver is in the proper spot
+  docker_container:
+    name: Crowd
+    restart: yes

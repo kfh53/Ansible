@@ -5,4 +5,12 @@
     published_ports: "{{ bitbucket_port }}:{{ bitbucket_port }}"
     state: started
     volumes:
-      - "{{ vol_dir }}/bitbucket:/data"
+      - "{{ vol_dir }}/bitbucket:{{ home_dir }}/bitbucket"
+
+- name: Move JDBC Drive to the proper place
+  command: docker exec Bitbucket bash -c "cp {{ home_dir }}crowd/mysql-connector-java-5.1.48-bin.jar {{ home_dir }}/bitbucket/lib/"
+
+- name: Restart after the driver is in the proper spot
+  docker_container:
+    name: Bitbucket
+    restart: yes
