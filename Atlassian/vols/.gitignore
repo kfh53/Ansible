@@ -1,12 +1,7 @@
 bamboo/*
 bitbucket/*
 confluence/*
-jira/*
-crowd/*
-mysql/*
-bamboo/*
-bitbucket/*
-confluence/*
 crowd/*
 jira/*
 mysql/*
+stash/*

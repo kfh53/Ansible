@@ -4,5 +4,14 @@
     image: atlassian/bamboo-server
     published_ports: "{{ bamboo_port }}:{{ bamboo_port }}"
     state: started
+    recreate: yes
     volumes:
-      - "{{ vol_dir }}/bamboo:/data"
+      - "{{ vol_dir }}/bamboo:{{ home_dir }}bamboo"
+
+- name: Move JDBC Drive to the proper place
+  command: docker exec Bamboo bash -c "cp {{ home_dir }}bamboo/{{ mysql_bin_jar }} {{ bamboo_driver_dir }}"
+
+- name: Restart after the driver is in the proper spot
+  docker_container:
+    name: Bamboo
+    restart: yes

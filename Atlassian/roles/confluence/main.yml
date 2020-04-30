@@ -9,7 +9,7 @@
       - "{{ vol_dir }}/confluence/:{{ home_dir }}/confluence/"
 
 - name: Move JDBC Drive to the proper place
-  command: docker exec Confluence bash -c "cp {{ home_dir }}/confluence/mysql-connector-java-5.1.48-bin.jar {{ confluence_driver_dir }}"
+  command: docker exec Confluence bash -c "cp {{ home_dir }}/confluence/{{ mysql_bin_jar }} {{ confluence_driver_dir }}"
 
 - name: Restart after the driver is in the proper spot
   docker_container:

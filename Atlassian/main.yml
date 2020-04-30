@@ -16,9 +16,28 @@
       - python3-pip
     loop_control:
       loop_var: packages
+
   - name: Install docker-py
     pip:
       name: docker-py
+  
+  - name: Make sure MySQL connector bin is in each volume (except jira)
+    copy: 
+      src: "{{ vol_dir }}/{{ mysql_bin_jar }}"
+      dest: "{{ vol_dir }}/{{ vol }}/{{ mysql_bin_jar }}"
+    loop:
+      - bamboo
+      - confluence
+      - bitbucket
+      - crowd
+    loop_control:
+      loop_var: vol
+
+  - name: Move jira connector to it's volume
+    copy:
+      src: "{{ vol_dir }}/{{ mysql_jira_jar }}"
+      dest: "{{ vol_dir }}/jira/{{ mysql_jira_jar }}"
+
   - name: Start Docker 
     service: 
       name: docker
@@ -34,7 +53,6 @@
       - atlassian/bamboo-server
       - atlassian/bitbucket-server
       - atlassian/crowd
-      - atlassian/stash
     loop_control:
       loop_var: docker_images
   - name: Create Containers

@@ -36,6 +36,7 @@
   loop_control:
     loop_var: make_db
 
+
 - name: Create db_user and give privileges
   mysql_user:
     login_user: root
@@ -46,4 +47,8 @@
     name: db_user
     password: password
     state: present
-    priv: '*.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,ALTER,INDEX'
+    priv: '*.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,ALTER,INDEX,CREATE TEMPORARY TABLES'
+
+#TODO Use mysql_query role as it becomes stable and available
+- name: Alter bitbucket db (Update character set)
+  command: docker exec MySQL bash -c mysql --user=db_user --password=password bitbucket_db --host=192.168.1.194 --execute="alter database bitbucket_db character set utf8 collate utf8_bin;"

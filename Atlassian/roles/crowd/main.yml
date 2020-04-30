@@ -9,7 +9,7 @@
       - "{{ vol_dir }}/crowd:{{ home_dir }}/crowd/"
 
 - name: Move JDBC Drive to the proper place
-  command: docker exec Crowd bash -c "cp {{ home_dir }}crowd/mysql-connector-java-5.1.48-bin.jar {{ crowd_driver_dir }}"
+  command: docker exec Crowd bash -c "cp {{ home_dir }}crowd/{{ mysql_bin_jar }} {{ crowd_driver_dir }}"
 
 - name: Restart after the driver is in the proper spot
   docker_container:

@@ -1,13 +1,17 @@
 ---
 mysql_ip: 192.168.1.194
 mysql_port: 3306
+mysql_bin_jar: mysql-connector-java-5.1.48-bin.jar
+mysql_jira_jar: mysql-connector-java-5.1.48.jar
 bamboo_port: 8085
 bitbucket_port: 7990
 confluence_port: 8090
 crowd_port: 8095
 jira_port: 8080
+stash_port: 7990
 confluence_driver_dir: /opt/atlassian/confluence/confluence/WEB-INF/lib/
 jira_driver_dir: /opt/atlassian/jira/lib/
 crowd_driver_dir: /opt/atlassian/crowd/apache-tomcat/lib/
+bamboo_driver_dir: /opt/atlassian/bamboo/lib/
 vol_dir: /root/Ansible/Atlassian/vols/
 home_dir: /var/atlassian/application-data/
