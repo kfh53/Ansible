@@ -4,8 +4,13 @@
   gather_facts: yes
   tasks: 
   - name: Pull in variables from group_vars/vars
-    include_vars: group_vars/vars
-    
+    include_vars: "{{ variable_file }}"
+    loop: 
+      - group_vars/vars
+      - group_vars/vault
+    loop_control:
+      loop_var: variable_file    
+  
   - name: Download Dependencies
     apt:
       name: "{{ packages }}"
@@ -21,6 +26,11 @@
     pip:
       name: docker-py
   
+  - name: Copy host file to Ansible Default Location
+    copy:
+      src: /root/Ansible/Atlassian/hosts
+      dest: /etc/ansible/hosts
+    
   - name: Make sure MySQL connector bin is in each volume (except jira)
     copy: 
       src: "{{ vol_dir }}/{{ mysql_bin_jar }}"

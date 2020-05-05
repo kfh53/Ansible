@@ -9,19 +9,19 @@
       - "{{ vol_dir }}/mysql:/var/lib/mysql"
       - "{{ vol_dir }}/mysql-conf:/etc/mysql/conf.d/"
     env:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: "{{ mysql_password }}"
 
 - name: Wait for mysql service to start before creating databases
   wait_for: 
     host: "{{ mysql_ip }}"
     port: "{{ mysql_port }}"
     delay: 5
-    timeout: 30
+    timeout: 60
 
 - name: Make "{{ make_db }}"
   mysql_db:
     login_user: root
-    login_password: password
+    login_password: "{{ mysql_password }}"
     login_host: "{{ mysql_ip }}"
     login_port: "{{ mysql_port }}"
     name: "{{ make_db }}"
@@ -39,7 +39,7 @@
   mysql_db:
     name: bitbucket_db
     login_user: root
-    login_password: password
+    login_password: "{{ mysql_password }}"
     login_host: "{{ mysql_ip }}"
     login_port: "{{ mysql_port }}"
     state: present
@@ -48,11 +48,11 @@
 - name: Create db_user and give privileges
   mysql_user:
     login_user: root
-    login_password: password
+    login_password: "{{ mysql_password }}"
     login_host: "{{ mysql_ip }}"
     login_port: "{{ mysql_port }}"
     host: 172.17.0.1
     name: db_user
-    password: password
+    password: "{{ mysql_password }}"
     state: present
     priv: '*.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,ALTER,INDEX,CREATE TEMPORARY TABLES'

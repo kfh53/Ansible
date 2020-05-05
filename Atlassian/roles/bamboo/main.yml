@@ -6,10 +6,10 @@
     state: started
     recreate: yes
     volumes:
-      - "{{ vol_dir }}/bamboo:{{ home_dir }}bamboo"
+      - "{{ vol_dir }}/bamboo:{{ home_dir }}/bamboo"
 
 - name: Move JDBC Drive to the proper place
-  command: docker exec Bamboo bash -c "cp {{ home_dir }}bamboo/{{ mysql_bin_jar }} {{ bamboo_driver_dir }}"
+  command: docker exec Bamboo bash -c "cp {{ home_dir }}/bamboo/{{ mysql_bin_jar }} {{ bamboo_driver_dir }}"
 
 - name: Restart after the driver is in the proper spot
   docker_container:
