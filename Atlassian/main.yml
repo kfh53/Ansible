@@ -31,6 +31,21 @@
       src: /root/Ansible/Atlassian/hosts
       dest: /etc/ansible/hosts
     
+  - name: Create volume directories if they do not exist
+    file:
+      path: "{{ vol_dir }}/{{ tool_dir }}"
+      state: directory
+      mode: '0777'
+    loop:
+      - bitbucket
+      - crowd
+      - jira
+      - confluence
+      - bamboo
+      - mysql
+    loop_control:
+      loop_var: tool_dir
+    
   - name: Make sure MySQL connector bin is in each volume (except jira)
     copy: 
       src: "{{ vol_dir }}/{{ mysql_bin_jar }}"
