@@ -35,7 +35,6 @@
     file:
       path: "{{ vol_dir }}/{{ tool_dir }}"
       state: directory
-      mode: '0777'
     loop:
       - bitbucket
       - crowd
@@ -55,13 +54,14 @@
       - confluence
       - bitbucket
       - crowd
+      - jira
     loop_control:
       loop_var: vol
 
-  - name: Move jira connector to it's volume
-    copy:
-      src: "{{ vol_dir }}/{{ mysql_jira_jar }}"
-      dest: "{{ vol_dir }}/jira/{{ mysql_jira_jar }}"
+  # - name: Move jira connector to it's volume
+  #   copy:
+  #     src: "{{ vol_dir }}/{{ mysql_jira_jar }}"
+  #     dest: "{{ vol_dir }}/jira/{{ mysql_jira_jar }}"
 
   - name: Start Docker 
     service: 
