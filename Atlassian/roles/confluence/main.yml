@@ -8,6 +8,11 @@
     volumes:
       - "{{ vol_dir }}/confluence/:{{ home_dir }}/confluence/"
 
+# TODO: This stems from an issue from mysql role, fix and remove this
+- name: Fix wierd permissions issue with connector file
+  command: docker exec Confluence bash -c "chmod 777 {{ home_dir }}/confluence/{{ mysql_bin_jar }}"
+
+
 - name: Move JDBC Drive to the proper place
   command: docker exec Confluence bash -c "cp {{ home_dir }}/confluence/{{ mysql_bin_jar }} {{ confluence_driver_dir }}"
 
