@@ -37,7 +37,7 @@
       state: directory
       # owner: root
       # group: root
-      # mode: 0777
+      # mode: 0775
     loop:
       - bitbucket
       - crowd
@@ -57,6 +57,7 @@
       - confluence
       - bitbucket
       - crowd
+      #- jira
     loop_control:
       loop_var: vol
 
