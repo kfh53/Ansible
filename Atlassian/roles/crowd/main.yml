@@ -8,6 +8,10 @@
     volumes:
       - "{{ vol_dir }}/crowd:{{ home_dir }}/crowd/"
 
+# TODO: This stems from an issue from mysql role, fix and remove this
+- name: Fix wierd permissions issue with connector file
+  command: docker exec Crowd bash -c "chmod 777 {{ home_dir }}/crowd/{{ mysql_bin_jar }}"
+
 - name: Move JDBC Drive to the proper place
   command: docker exec Crowd bash -c "cp {{ home_dir }}/crowd/{{ mysql_bin_jar }} {{ crowd_driver_dir }}"
 

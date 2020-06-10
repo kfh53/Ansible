@@ -17,15 +17,20 @@
       state: latest
       update_cache: yes
     loop:
-      - docker
+      - docker.io
       - python3-pip
     loop_control:
       loop_var: packages
 
   - name: Install docker-py
     pip:
-      name: docker-py
-  
+      name: "{{ pip }}"
+    loop:
+      - docker-py
+      - PyMySQL
+    loop_control:
+      loop_var: pip
+
   - name: Copy host file to Ansible Default Location
     copy:
       src: /root/Ansible/Atlassian/hosts
@@ -53,11 +58,10 @@
       src: "{{ vol_dir }}/{{ mysql_bin_jar }}"
       dest: "{{ vol_dir }}/{{ vol }}/{{ mysql_bin_jar }}"
     loop:
-      - bamboo
+      # - bamboo
       - confluence
       - bitbucket
       - crowd
-      #- jira
     loop_control:
       loop_var: vol
 
@@ -70,23 +74,25 @@
     service: 
       name: docker
       state: started
-  - name: Pull Atlassian images
-    docker_image:
-      name: "{{ docker_images }}"
-      source: pull
-    loop:
-      - mysql
-      - atlassian/jira-software
-      - atlassian/confluence-server
-      - atlassian/bamboo-server
-      - atlassian/bitbucket-server
-      - atlassian/crowd
-    loop_control:
-      loop_var: docker_images
+  
+  # - name: Pull Atlassian images
+  #   docker_image:
+  #     name: "{{ docker_images }}"
+  #     source: pull
+  #   loop:
+  #     - mysql
+  #     - atlassian/jira-software
+  #     - atlassian/confluence-server
+  #     - atlassian/bamboo-server
+  #     - atlassian/bitbucket-server
+  #     - atlassian/crowd
+  #   loop_control:
+  #     loop_var: docker_images
 
   - name: Create Containers
     include: "{{ containers }}"
     loop: 
+      - roles/docker/main.yml
       - roles/mysql/main.yml
       - roles/jira/main.yml
       - roles/confluence/main.yml

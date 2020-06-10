@@ -1,3 +1,9 @@
+# # TODO: This stems from an issue from mysql role, fix and remove this
+# - name: Fix wierd permissions issue with connector
+#   file:
+#     path: "{{ vol_dir }}/bamboo/{{ mysql_bin_jar }}"
+#     mode: 0777
+
 - name: Create Bamboo Container
   docker_container:
     name: Bamboo
@@ -8,8 +14,8 @@
     volumes:
       - "{{ vol_dir }}/bamboo:{{ home_dir }}/bamboo"
 
-- name: Move JDBC Drive to the proper place
-  command: docker exec Bamboo bash -c "cp {{ home_dir }}/bamboo/{{ mysql_bin_jar }} {{ bamboo_driver_dir }}"
+# - name: Move JDBC Drive to the proper place
+#   command: docker exec Bamboo bash -c "cp {{ home_dir }}/bamboo/{{ mysql_bin_jar }} {{ bamboo_driver_dir }}"
 
 - name: Restart after the driver is in the proper spot
   docker_container:

@@ -1,0 +1,14 @@
+- name: Load all docker images in images dir
+  docker_image:
+    name: "{{ image }}"
+    load_path: "{{ image_dir }}/{{ image }}.tar"
+    source: load
+  loop:
+    - confluence
+    - jira
+    - bitbucket
+    - crowd
+    - bamboo
+    - mysql
+  loop_control:
+    loop_var: image
