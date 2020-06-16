@@ -2,7 +2,7 @@
   docker_container:
     name: Bitbucket
     image: atlassian/bitbucket-server
-    published_ports: "{{ bitbucket_port }}:{{ bitbucket_port }}"
+    published_ports: "{{ bitbucket_ip }}:{{ bitbucket_port }}:{{ bitbucket_port }}"
     state: started
     recreate: yes
     volumes:
@@ -11,11 +11,6 @@
 - name: Pause and let the container catch up before moving the driver
   pause:
     minutes: 5
-
-# - name: hold on tight, we're doing funky checks
-#   command: docker exec Bitbucket bash -c "ls {{ home_dir }}/bitbucket/lib"
-#   register: cmd_res
-#   until: cmd_res.stdout_lines | reject('search', '^ls') | list | count == 0
 
 # TODO: This stems from an issue from mysql role, fix and remove this
 - name: Fix wierd permissions issue with connector

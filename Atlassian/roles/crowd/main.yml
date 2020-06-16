@@ -2,7 +2,7 @@
   docker_container:
     name: Crowd
     image: atlassian/crowd
-    published_ports: "{{ crowd_port }}:{{ crowd_port }}"
+    published_ports: "{{ crowd_ip }}:{{ crowd_port }}:{{ crowd_port }}"
     state: started
     recreate: yes
     volumes:

@@ -40,9 +40,6 @@
     file:
       path: "{{ vol_dir }}/{{ tool_dir }}"
       state: directory
-      # owner: root
-      # group: root
-      # mode: 0775
     loop:
       - bitbucket
       - crowd
@@ -58,7 +55,7 @@
       src: "{{ vol_dir }}/{{ mysql_bin_jar }}"
       dest: "{{ vol_dir }}/{{ vol }}/{{ mysql_bin_jar }}"
     loop:
-      # - bamboo
+      - bamboo
       - confluence
       - bitbucket
       - crowd
@@ -74,20 +71,6 @@
     service: 
       name: docker
       state: started
-  
-  # - name: Pull Atlassian images
-  #   docker_image:
-  #     name: "{{ docker_images }}"
-  #     source: pull
-  #   loop:
-  #     - mysql
-  #     - atlassian/jira-software
-  #     - atlassian/confluence-server
-  #     - atlassian/bamboo-server
-  #     - atlassian/bitbucket-server
-  #     - atlassian/crowd
-  #   loop_control:
-  #     loop_var: docker_images
 
   - name: Create Containers
     include: "{{ containers }}"

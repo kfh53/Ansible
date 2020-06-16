@@ -4,7 +4,7 @@
     image: atlassian/jira-software
     recreate: yes
     state: started
-    published_ports: "{{ jira_port }}:{{ jira_port }}"
+    published_ports: "{{ jira_ip }}:{{ jira_port }}:{{ jira_port }}"
     volumes:
       - "{{ vol_dir }}/jira/:{{ home_dir }}/jira/"
 

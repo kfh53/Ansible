@@ -2,7 +2,7 @@
   docker_container:
     name: MySQL
     image: mysql:5.7
-    published_ports: "{{ mysql_port }}:{{ mysql_port }}"
+    published_ports: "{{ mysql_ip }}:{{ mysql_port }}:{{ mysql_port }}"
     state: started
     recreate: yes
     volumes:
@@ -32,7 +32,6 @@
     - bamboo_db
     - crowd_db
     - stash_db
-    # - bitbucket_db
   loop_control:
     loop_var: make_db
 
@@ -58,3 +57,6 @@
     password: "{{ mysql_password }}"
     state: present
     priv: '*.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,ALTER,INDEX,CREATE TEMPORARY TABLES'
+
+- name: Unlock Bitbucket db
+  command: docker exec -it MySQL "mysql"

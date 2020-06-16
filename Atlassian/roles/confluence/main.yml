@@ -2,7 +2,7 @@
   docker_container:
     name: Confluence
     image: atlassian/confluence-server
-    published_ports: "{{ confluence_port }}:{{ confluence_port }}"
+    published_ports: "{{ confluence_ip }}:{{ confluence_port }}:{{ confluence_port }}"
     state: started
     recreate: yes
     volumes:
