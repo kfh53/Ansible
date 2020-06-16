@@ -1,0 +1,59 @@
+---
+- name: Server Setup
+  hosts: atlassian
+  gather_facts: yes
+  tasks:
+  vars: 
+    backup_location: "{{ Backup_dir }}/{{ location }}/{{ ansible_date_time.date }}"
+  
+  - name: Pull in variables from group_vars/vars
+    include_vars: "{{ variable_file }}"
+    loop: 
+      - group_vars/vars
+      - group_vars/vault
+    loop_control:
+      loop_var: variable_file 
+
+  - name: Make sure the backup directory exists
+    file: 
+      path: "{{ Backup_dir }}"
+      state: directory
+
+  - name: Make sure the {{ location }} directory exists
+    file: 
+      path: "{{ Backup_dir }}/{{ location }}"
+      state: directory
+
+  - name: Make the date directory
+    file: 
+      path: "{{ Backup_location }}"
+      state: directory
+
+  - name: Dump the databases
+    mysql_db: 
+      name: "{{ db_name }}"
+      state: dump
+      login_user: root
+      login_password: "{{ mysql_password }}"
+      login_host: "{{ mysql_ip }}"
+      login_port: "{{ mysql_port }}"
+      target: "{{ Backup_location }}"
+    loop:
+      - jira_db
+      - bitbucket_db
+      - crowd_db
+      - bamboo_db
+      - confluence_db
+    loop_control:
+      loop_var: db_name
+  
+  - name: Make a backup tarball
+    archive:
+      path: "{{ Backup_location }}"
+      dest: "{{ Backup_location }}.tar"
+      format: tar
+  
+  - name: Clean up backup directory
+    file:
+      path: "{{ Backup_location }}"
+      state: absent
