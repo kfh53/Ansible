@@ -9,27 +9,7 @@
       - group_vars/vars
       - group_vars/vault
     loop_control:
-      loop_var: variable_file    
-  
-  - name: Download Dependencies
-    apt:
-      name: "{{ packages }}"
-      state: latest
-      update_cache: yes
-    loop:
-      - docker.io
-      - python3-pip
-    loop_control:
-      loop_var: packages
-
-  - name: Install docker-py
-    pip:
-      name: "{{ pip }}"
-    loop:
-      - docker-py
-      - PyMySQL
-    loop_control:
-      loop_var: pip
+      loop_var: variable_file
 
   - name: Copy host file to Ansible Default Location
     copy:

@@ -1,11 +1,9 @@
 ---
-- name: Server Setup
+- name: Backups and Cleaning
   hosts: atlassian
   gather_facts: yes
   tasks:
-  vars: 
-    backup_location: "{{ Backup_dir }}/{{ location }}/{{ ansible_date_time.date }}"
-  
+
   - name: Pull in variables from group_vars/vars
     include_vars: "{{ variable_file }}"
     loop: 
@@ -16,17 +14,17 @@
 
   - name: Make sure the backup directory exists
     file: 
-      path: "{{ Backup_dir }}"
+      path: "{{ backup_dir }}"
       state: directory
 
   - name: Make sure the {{ location }} directory exists
     file: 
-      path: "{{ Backup_dir }}/{{ location }}"
+      path: "{{ backup_dir }}/{{ location }}"
       state: directory
 
   - name: Make the date directory
     file: 
-      path: "{{ Backup_location }}"
+      path: "{{ backup_location }}"
       state: directory
 
   - name: Dump the databases
@@ -37,7 +35,7 @@
       login_password: "{{ mysql_password }}"
       login_host: "{{ mysql_ip }}"
       login_port: "{{ mysql_port }}"
-      target: "{{ Backup_location }}"
+      target: "{{ backup_location }}/{{ db_name }}.sql"
     loop:
       - jira_db
       - bitbucket_db
@@ -49,11 +47,24 @@
   
   - name: Make a backup tarball
     archive:
-      path: "{{ Backup_location }}"
-      dest: "{{ Backup_location }}.tar"
+      path: "{{ backup_location }}"
+      dest: "{{ backup_location }}.tar"
       format: tar
   
   - name: Clean up backup directory
     file:
-      path: "{{ Backup_location }}"
+      path: "{{ backup_location }}"
+      state: absent
+
+  - name: Find out of date backups
+    find:
+      paths: "{{ backup_dir }}/{{ location }}/"
+      patterns: "*.tar"
+      age: "{{ remove_age }}"
+    register: output
+    when: location != "monthly"
+
+  - name: Remove old backups
+    file:
+      path: "{{ output.files }}"
       state: absent

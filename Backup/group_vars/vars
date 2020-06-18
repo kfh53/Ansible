@@ -1,0 +1,10 @@
+---
+
+# Networking
+mysql_ip: 192.168.1.196
+backup_dir: /root/backups
+backup_location: "{{ backup_dir }}/{{ location }}/{{ ansible_date_time.date }}"
+mysql_port: 3306
+
+# Sensitive variables
+mysql_password: "{{ vault_mysql_password }}"

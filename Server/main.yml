@@ -3,20 +3,58 @@
   hosts: atlassian
   gather_facts: yes
   tasks:
+
+  - name: Pull in variables from group_vars/vars
+    include_vars: "{{ variable_file }}"
+    loop: 
+      - group_vars/vars
+      #- group_vars/vault
+    loop_control:
+      loop_var: variable_file 
+
+  - name: Download Dependencies
+    apt:
+      name: "{{ packages }}"
+      state: latest
+      update_cache: yes
+    loop:
+      - docker.io
+      - python3-pip
+      - mysql-client
+    loop_control:
+      loop_var: packages
+
+  - name: Install docker-py
+    pip:
+      name: "{{ pip }}"
+    loop:
+      - docker-py
+      - PyMySQL
+    loop_control:
+      loop_var: pip
+
   - name: Set up Daily Cron job
     cron: 
       name: Set up Daily Backup Job to run at 2 a.m.
-      hour: 2
-      job: "ansible-playbook {{ backup_script }} --extra-vars \"location=daily\""
+      hour: '2'
+      job: "ansible-playbook {{ backup_script }} --extra-vars \"location=daily remove_age=4w\""
+      user: root
+      cron_file: daily_mysql_backup
+  
   - name: Set up Weekly Cron jobs
     cron: 
       name: Set up Weekly Backup Job to run at 3 a.m on Sunday.
-      weekday: 0 
-      hour: 3
-      job: "ansible-playbook {{ backup_script }} --extra-vars \"location=weekly\""
+      weekday: '0' 
+      hour: '3'
+      job: "ansible-playbook {{ backup_script }} --extra-vars \"location=weekly remove_age=12w\""
+      user: root
+      cron_file: weekly_mysql_backup
+
   - name: Set up Monthly Cron jobs
     cron: 
-      name: Set up Monthly Backup Job to run at 2.
-      day: 1 
-      hour: 4
+      name: Set up Monthly Backup Job to run on the first of the month.
+      day: '1' 
+      hour: '4'
       job: "ansible-playbook {{ backup_script }} --extra-vars \"location=monthly\""  
+      user: root
+      cron_file: monthly_mysql_backup
