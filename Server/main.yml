@@ -33,6 +33,24 @@
     loop_control:
       loop_var: pip
 
+  - name: Make images directory
+    file: 
+      path: "{{ image_dir }}"
+      state: directory
+
+  - name: Pull docker images
+    docker_image:
+      name: "{{ item.image }}"
+      source: pull
+      archive_path: "{{ image_dir }}/{{ item.name }}.tar"
+    loop:
+      - { image: mysql:5.7, name: mysql }
+      - { image: atlassian/jira-software, name: jira }
+      - { image: atlassian/confluence-server, name: confluence }
+      - { image: atlassian/bamboo-server, name: bamboo }
+      - { image: atlassian/crowd, name: crowd }
+      - { image: atlassian/bitbucket-server, name: bitbucket }
+
   - name: Set up Daily Cron job
     cron: 
       name: Set up Daily Backup Job to run at 2 a.m.
