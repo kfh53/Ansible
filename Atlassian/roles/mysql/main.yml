@@ -57,6 +57,3 @@
     password: "{{ mysql_password }}"
     state: present
     priv: '*.*:SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,REFERENCES,ALTER,INDEX,CREATE TEMPORARY TABLES'
-
-- name: Unlock Bitbucket db
-  command: docker exec -it MySQL "mysql"
