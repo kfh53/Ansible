@@ -1,7 +1,7 @@
 ---
 
 # Networking
-mysql_ip: 192.168.1.199
+mysql_ip: 192.168.1.200
 backup_script: /root/Ansible/Backup/main.yml
 image_dir: /root/Ansible/Atlassian/images
 

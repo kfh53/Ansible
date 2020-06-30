@@ -11,12 +11,12 @@ home_dir: /var/atlassian/application-data
 image_dir: /root/Ansible/Atlassian/images
 
 # Networking
-mysql_ip: 192.168.1.199
-bamboo_ip: 192.168.1.199
-confluence_ip: 192.168.1.199
-jira_ip: 192.168.1.199
-crowd_ip: 192.168.1.199
-bitbucket_ip: 192.168.1.199
+mysql_ip: 192.168.1.200
+bamboo_ip: 192.168.1.200
+confluence_ip: 192.168.1.200
+jira_ip: 192.168.1.200
+crowd_ip: 192.168.1.200
+bitbucket_ip: 192.168.1.200
 mysql_port: 3306
 bamboo_port: 8085
 bitbucket_port: 7990

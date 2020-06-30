@@ -1,0 +1,111 @@
+Dev-Ops:
+
+We have selected Ansible as a means of setting up our
+servers with consistant configurations, managing 
+database backups, as well as deploying docker containers
+that contain our development atlassian tool suite. It was
+chosen due to being essentially a Swiss army knife for managing
+multiple servers in a devops compacity. 
+
+Ansible is open-source software/configuration management tool
+which enables the infrastructure as code ideology. Ansible is agentless,
+and will allow us to configure any machine that has SSH or Windows
+Remote Management available.
+
+- How it works, commands and such
+
+Ansible can be installed on the provisioning server via apt or 
+other common package management tools.
+
+    apt install ansible -y
+
+As part of the installation a hosts inventory file is created,
+the default is /etc/ansible/hosts. This file manages groups and information
+about the hosts that your provisioner will deploy to. This can include 
+as little as just the localhost up to a server farm. Ansible projects
+deploy in parallel, so in theory running should take as long as your
+slowest machine regardless of the number of hosts. For more information
+about host files check out https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html
+
+Ansible code is written in files called playbooks and uses the YAML format.
+Each playbook is an aggregation of 'plays' or modules. A standard
+playbook contains:
+    name: Tag specifying what will happen in the playbook
+    hosts: list of hosts to run on, typically references the inventory
+    vars: Used to define variables for the playbook
+    tasks: List of modules, each of which serve a function or represent an action
+
+To run playbook main.yml use:
+ansible-playbook main.yml 
+
+- Variables
+
+Variables for ansible playbooks can be set multiple ways. 
+
+    At the top of a single playbook: as discussed above, simply
+    declare variables above your tasks 
+        vars: 
+            - test: variable1
+            - test2: variable2
+    
+    In a variable file: This is normally considered best practice
+    as most playbooks have a nested structure of playbook, importing a
+    variable file at the top playbook allows for the variables to
+    be used in all playbooks.
+
+    In an inventory: Declaring variables in an inventory is typically
+    used in cases where you want variables that are dependent on host
+
+- Ansible Vault
+
+Ansible offers Vault as a service for encrypting variable files. This
+is primarily used as a means of securing sensitive information 
+such as passwords. Vault variable files are identical to normal variable
+files, the difference is vault is encrypted. The encryption process
+prompts the user for a password which will be required to run any
+playbooks that import it. 
+
+Vault commands:
+    encrypt: ansible-vault encrypt variable_file
+    edit:    ansible-vault edit variable_file
+    decrypt: ansible-vault decrypt variable_file
+    run:     ansible-playbook playbook.yml --ask-vault-pass
+
+- Server setup
+
+Currently, the devops directory has a set of playbooks that manage
+setting up a new provisioning server. This implies that the server is 
+first connected to Gooseberry before switching to Dev-net. This playbook
+will install all dependencies and docker images, as well as setting up
+a database backup system using a Cron/Ansible combination.
+
+Located at $Devops_home/Server/main.yml 
+
+- Atlassian
+
+Our Atlassian tool suite is completely set up with ansible. Currently,
+ansible will set up docker containers for:
+    - MySQL
+    - bamboo
+    - bitbucket
+    - confluence
+    - crowd
+    - jira
+
+Each tool has it's own playbook to help manage bringing up the 
+container properly. Networking can also be taken care of here. 
+
+Located at $Devops_home/Atlassian/main.yml
+
+- Backups
+
+The current setup for backups include setting up cron jobs (As part of the Server step)
+for database backups every day, week, month. There is also a check to 
+keep track of and delete outdated backups. 
+
+The cron jobs made run the script located at $Devops_home/Backup/main.yml.
+This playbook dumps all of the MySQL databases, moves them all to a tarball, 
+moves them to the backup directory at /root/backups/
+
+- Updating images
+
