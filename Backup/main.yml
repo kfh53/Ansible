@@ -45,6 +45,23 @@
     loop_control:
       loop_var: db_name
   
+  # Move Atlassian xmls
+  - name: Move Atlassian xmls to backup dir
+    copy:
+      src: "{{ docker_vols }}/{{ tool_xml }}"
+      dest: "{{ backup_location }}"
+    loop:
+      - jira/export
+    loop_control:
+      loop_var: tool_xml
+  
+  # Monthly? Weekly? shared folder backups
+  - name: Make a docker volume backup monthly
+    archive:
+      path: "{{ docker_vols }}"
+      dest: "{{ backup_location }}/vols.tar"
+    when: location != "daily"
+
   - name: Make a backup tarball
     archive:
       path: "{{ backup_location }}"

@@ -21,6 +21,14 @@
       - docker.io
       - python3-pip
       - mysql-client
+      - bind9
+      - isc-dhcp-server
+      - netcat
+      - net-tools
+      - nmap
+      - cockpit
+      - samba
+      - smbfs
     loop_control:
       loop_var: packages
 
@@ -64,7 +72,7 @@
       name: Set up Weekly Backup Job to run at 3 a.m on Sunday.
       weekday: '0' 
       hour: '3'
-      job: "ansible-playbook {{ backup_script }} --extra-vars \"location=weekly remove_age=12w\""
+      job: "ansible-playbook {{ backup_script }} --extra-vars \"location=weekly remove_age=26w\""
       user: root
       cron_file: weekly_mysql_backup
 
