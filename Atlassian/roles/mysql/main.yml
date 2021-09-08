@@ -31,7 +31,6 @@
     - confluence_db
     - bamboo_db
     - crowd_db
-    - stash_db
   loop_control:
     loop_var: make_db
 

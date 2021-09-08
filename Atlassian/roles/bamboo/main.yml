@@ -1,14 +1,8 @@
-- name: Update Bamboo home to allow full permissions
-  file:
-    path: "{{ vol_dir }}/bamboo/"
-    state: directory
-    mode: '0777'
-
 - name: Create Bamboo Container
   docker_container:
     name: Bamboo
     image: atlassian/bamboo-server
-    published_ports: "{{ bamboo_ip }}:{{ bamboo_port }}:{{ bamboo_port }}"
+    published_ports: "{{ bamboo_ip }}:80:{{ bamboo_port }}"
     state: started
     recreate: yes
     volumes:
@@ -16,6 +10,7 @@
 
 - name: Move JDBC Drive to the proper place
   command: docker exec Bamboo bash -c "cp {{ home_dir }}/bamboo/{{ mysql_bin_jar }} {{ bamboo_driver_dir }}"
+  when: 'mysql|bool'
 
 - name: Restart after the driver is in the proper spot
   docker_container:

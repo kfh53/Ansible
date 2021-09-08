@@ -2,18 +2,15 @@
   docker_container:
     name: Crowd
     image: atlassian/crowd
-    published_ports: "{{ crowd_ip }}:{{ crowd_port }}:{{ crowd_port }}"
+    published_ports: "{{ crowd_ip }}:80:{{ crowd_port }}"
     state: started
     recreate: yes
     volumes:
       - "{{ vol_dir }}/crowd:{{ home_dir }}/crowd/"
 
-# TODO: This stems from an issue from mysql role, fix and remove this
-- name: Fix wierd permissions issue with connector file
-  command: docker exec Crowd bash -c "chmod 777 {{ home_dir }}/crowd/{{ mysql_bin_jar }}"
-
 - name: Move JDBC Drive to the proper place
   command: docker exec Crowd bash -c "cp {{ home_dir }}/crowd/{{ mysql_bin_jar }} {{ crowd_driver_dir }}"
+  when: 'mysql|bool'
 
 - name: Restart after the driver is in the proper spot
   docker_container:

@@ -2,24 +2,15 @@
   docker_container:
     name: Bitbucket
     image: atlassian/bitbucket-server
-    published_ports: "{{ bitbucket_ip }}:{{ bitbucket_port }}:{{ bitbucket_port }}"
+    published_ports: "{{ bitbucket_ip }}:80:{{ bitbucket_port }}"
     state: started
     recreate: yes
     volumes:
       - "{{ vol_dir }}/bitbucket/:{{ home_dir }}/bitbucket"
 
-- name: Pause and let the container catch up before moving the driver
-  pause:
-    minutes: 5
-
-# TODO: This stems from an issue from mysql role, fix and remove this
-- name: Fix wierd permissions issue with connector
-  file:
-    path: "{{ vol_dir }}/bitbucket/{{ mysql_bin_jar }}"
-    mode: 0777
-
 - name: Move JDBC Drive to the proper place
   command: docker exec Bitbucket bash -c "cp {{ home_dir }}/bitbucket/{{ mysql_bin_jar }} {{ home_dir }}/bitbucket/lib/"
+  when: 'mysql|bool'
 
 - name: Restart after the driver is in the proper spot
   docker_container:
