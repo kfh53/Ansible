@@ -11,11 +11,6 @@
     loop_control:
       loop_var: variable_file
 
-  - name: Copy host file to Ansible Default Location
-    copy:
-      src: /root/Ansible/Atlassian/hosts
-      dest: /etc/ansible/hosts
-    
   - name: Create volume directories if they do not exist
     file:
       path: "{{ vol_dir }}/{{ tool_dir }}"
@@ -41,11 +36,13 @@
       - crowd
     loop_control:
       loop_var: vol
+    when: 'mysql|bool'
 
   - name: Move jira connector to it's volume
     copy:
       src: "{{ vol_dir }}/{{ mysql_jira_jar }}"
       dest: "{{ vol_dir }}/jira/{{ mysql_jira_jar }}"
+    when: 'mysql|bool'
 
   - name: Start Docker 
     service: 
@@ -54,13 +51,6 @@
 
   - name: Create Containers
     include: "{{ containers }}"
-    loop: 
-      - roles/docker/main.yml
-      - roles/mysql/main.yml
-      - roles/jira/main.yml
-      - roles/confluence/main.yml
-      - roles/bamboo/main.yml
-      - roles/bitbucket/main.yml
-      - roles/crowd/main.yml
+    loop: "{{ list_of_roles }}"
     loop_control:
       loop_var: containers

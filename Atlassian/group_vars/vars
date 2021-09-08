@@ -9,8 +9,6 @@ bamboo_driver_dir: /opt/atlassian/bamboo/lib/
 vol_dir: /root/Ansible/Atlassian/vols
 home_dir: /var/atlassian/application-data
 image_dir: /root/Ansible/Atlassian/images
-
-# Networking
 mysql_ip: 192.168.1.200
 bamboo_ip: 192.168.1.200
 confluence_ip: 192.168.1.200
@@ -23,7 +21,16 @@ bitbucket_port: 7990
 confluence_port: 8090
 crowd_port: 8095
 jira_port: 8080
-stash_port: 7990
+mysql: True
+
+list_of_roles:      
+    - roles/mysql/main.yml
+    - roles/jira/main.yml
+    - roles/confluence/main.yml
+    - roles/bamboo/main.yml
+    - roles/bitbucket/main.yml
+    - roles/crowd/main.yml
+
 
 # Sensitive variables
 mysql_password: "{{ vault_mysql_password }}"
